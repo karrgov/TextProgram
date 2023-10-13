@@ -5,7 +5,7 @@ class Input
 {
     public:
     virtual void read() = 0;
-    virtual ~Input() {}
+    virtual ~Input();
 };
 
 class FileInput : public Input 
