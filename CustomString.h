@@ -24,6 +24,7 @@ class CustomString
         char* getArray();
         char* getArray() const;
         int sizeOfArray() const;
+        void setSize(int size);
         int capacityOfArray();
 
         void incrementSize();

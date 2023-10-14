@@ -95,6 +95,11 @@ int CustomString::sizeOfArray() const
     return this->size;
 }
 
+void CustomString::setSize(int size)
+{
+    this->size = size;
+}
+
 void CustomString::incrementSize()
 {
     size++;
