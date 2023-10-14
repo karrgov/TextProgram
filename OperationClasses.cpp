@@ -32,7 +32,6 @@ void RemoveWord::transform(CustomString& funcString)
 
 void RemoveLineContainingWord::transform(CustomString& funcString)
 {
-    char* inputText = funcString.getArray();
     int inputLength = funcString.sizeOfArray();
 
     int startIndex = 0;
@@ -41,17 +40,17 @@ void RemoveLineContainingWord::transform(CustomString& funcString)
 
     while (endIndex <= inputLength) 
     {
-        if (inputText[endIndex] == '\n' || inputText[endIndex] == '\0') 
+        if (*(funcString.getArray() + endIndex) == '\n' || *(funcString.getArray() + endIndex) == '\0') 
         {
             char* line = new char[endIndex - startIndex + 1];
-            strncpy(line, inputText + startIndex, endIndex - startIndex);
+            strncpy(line, funcString.getArray() + startIndex, endIndex - startIndex);
             line[endIndex - startIndex] = '\0';
 
             if (strstr(line, wordToBeRemoved) == nullptr) 
             {
-                strncpy(inputText + j, line, endIndex - startIndex);
+                strncpy(funcString.getArray() + j, line, endIndex - startIndex);
                 j += endIndex - startIndex;
-                inputText[j] = '\n';
+                *(funcString.getArray() + j) = '\n';
                 j++;
             }
 
@@ -61,7 +60,7 @@ void RemoveLineContainingWord::transform(CustomString& funcString)
         ++endIndex;
     }
 
-    inputText[j] = '\0';
+    *(funcString.getArray() + j) = '\0';
     funcString.setSize(j);
 }
 
