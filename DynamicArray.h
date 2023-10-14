@@ -53,7 +53,7 @@ class DynamicArray
             delete[] array;
             capacity = 0;
             size = 0;
-            for (int i = 0; i < other.getCapacity(); i++) 
+            for (int i = 0; i < other.getSize(); i++) 
             {
                 this->push_back(other[i]);
             }

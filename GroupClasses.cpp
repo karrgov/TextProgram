@@ -22,7 +22,7 @@ void Group::execute()
 {
     for (int i = 0; i < inputs.getSize(); i++)
     {
-        (*(*(inputs.getArray() + i))).read(funcString);
+        (*(inputs.getArray() + i))->read(funcString);
     } 
 
     for (int i = 0; i < textOperations.getSize(); i++)

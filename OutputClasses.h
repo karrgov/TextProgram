@@ -15,14 +15,13 @@ class FileOutput : public Output
     const char* filename;
 
     public:
+    FileOutput(const char* name) : filename(name) {}
     virtual void write(CustomString &funcString) override;
 
 };
 
 class ConsoleOutput : public Output 
 {
-    private:
-    const char* console;
     public:
     virtual void write(CustomString &funcString) override;
 
