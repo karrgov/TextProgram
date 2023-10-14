@@ -59,7 +59,7 @@ void CustomString::setData(const char* str)
     size = strLength;
 }
 
-char* CustomString::readInput()
+void CustomString::readInput()
 {
     char ch;
     while (std::cin.get(ch)) 
@@ -77,7 +77,14 @@ char* CustomString::readInput()
     }
 
     array[size] = '\0';
-    return array;
+}
+
+void CustomString::print()
+{
+    for(int i = 0; i < this->sizeOfArray(); i++)
+    {
+        std::cout << *(this->getArray() + i);
+    }
 }
 
 char* CustomString::getArray()

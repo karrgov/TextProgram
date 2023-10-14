@@ -6,7 +6,7 @@ class TextOperation
 {
     public:
     virtual void transform(CustomString& funcString) = 0;
-    virtual ~TextOperation();
+    virtual ~TextOperation() {}
 };
 
 class RemoveWord : public TextOperation
@@ -15,8 +15,8 @@ class RemoveWord : public TextOperation
     const char* wordToBeRemoved;
 
     public:
+    RemoveWord(const char* word) : wordToBeRemoved(word) {}
     virtual void transform(CustomString& funcString) override;
-    virtual ~RemoveWord();
 };
 
 class RemoveLineContainingWord : public TextOperation
@@ -25,8 +25,8 @@ class RemoveLineContainingWord : public TextOperation
     const char* wordToBeRemoved;
 
     public:
+    RemoveLineContainingWord(const char* word) : wordToBeRemoved(word) {}
     virtual void transform(CustomString& funcString) override;
-    virtual ~RemoveLineContainingWord();
 };
 
 class RemoveSymbol : public TextOperation
@@ -35,8 +35,8 @@ class RemoveSymbol : public TextOperation
     char symbolToBeRemoved;
 
     public:
+    RemoveSymbol(char symbol) : symbolToBeRemoved(symbol) {}
     virtual void transform(CustomString& funcString) override;
-    virtual ~RemoveSymbol();
 };
 
 class ReplaceWord : public TextOperation
@@ -46,73 +46,66 @@ class ReplaceWord : public TextOperation
     const char* replaceWord;
 
     public:
+    ReplaceWord(const char* word1, const char* word2) : toBeReplaced(word1), replaceWord(word2) {}
     virtual void transform(CustomString& funcString) override;
-    virtual ~ReplaceWord();
 };
 
 class RemovePunctuation : public TextOperation
 {
     public:
     virtual void transform(CustomString& funcString) override;
-    virtual ~RemovePunctuation();
 };
 
 class AddNewLineAfterSentence : public TextOperation
 {
     public:
     virtual void transform(CustomString& funcString) override;
-    virtual ~AddNewLineAfterSentence();
 };
 
 class AddNewLineAfterEachWord : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~AddNewLineAfterEachWord();
+    virtual void transform(CustomString& funcString) override;
 };
 
 class AddNewLineEveryKSymbols : public TextOperation
 {
     private: 
     int k;
+
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~AddNewLineEveryKSymbols();
+    AddNewLineEveryKSymbols(int m) : k(m) {}
+    virtual void transform(CustomString& funcString) override;
 };
 
 class RemoveNewLines : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~RemoveNewLines();
+    virtual void transform(CustomString& funcString) override;
 };
 
 class SortAlphabeticallyAllLines : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~SortAlphabeticallyAllLines();
+    virtual void transform(CustomString& funcString) override;
 };
 
 class RemoveDuplicateLines : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~RemoveDuplicateLines();
+    virtual void transform(CustomString& funcString) override;
 };
 
 class CountLines : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~CountLines();
+    virtual void transform(CustomString& funcString) override;
 };
 
 class CountSymbols : public TextOperation
 {
     public:
-    virtual char* transform(CustomString& funcString) override;
-    virtual ~CountSymbols();
+    virtual void transform(CustomString& funcString) override;
 };
 
 

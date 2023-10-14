@@ -10,13 +10,13 @@
 class Group
 {
     private:
-    CustomString string;
+    CustomString funcString;
     DynamicArray<Input*> inputs;
     DynamicArray<TextOperation*> textOperations;
     DynamicArray<Output*> outputs;
 
     public:
-    Group();
+    Group(CustomString &funcString, DynamicArray<Input*> &inputs, DynamicArray<TextOperation*> &textOperations, DynamicArray<Output*> &outputs);
     void execute();
 };
 
@@ -26,7 +26,7 @@ class MultiGroup
     DynamicArray<Group*> multiGroup;
 
     public:
-    MultiGroup();
+    MultiGroup(DynamicArray<Group*> multiGroup);
     void execute();
 
 };

@@ -19,7 +19,8 @@ class CustomString
         ~CustomString();
 
         void setData(const char* str);
-        char* readInput();
+        void readInput();
+        void print();
 
         char* getArray();
         char* getArray() const;

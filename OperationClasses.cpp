@@ -27,6 +27,7 @@ void RemoveWord::transform(CustomString& funcString)
         }
     }
     *(funcString.getArray() + i) = '\0';
+    funcString.setSize(streamLength);
 }
 
 void RemoveLineContainingWord::transform(CustomString& funcString)
@@ -79,6 +80,7 @@ void RemoveSymbol::transform(CustomString& funcString)
         }
     }
     *(funcString.getArray() + j) = '\0';
+    funcString.setSize(length - (length - j));
 }
 
 void ReplaceWord::transform(CustomString& funcString)
@@ -155,6 +157,7 @@ void RemovePunctuation::transform(CustomString& funcString)
         }
     }
     *(funcString.getArray() + j) = '\0';
+    funcString.setSize(length - (length - j));
 }
 
 void AddNewLineAfterSentence::transform(CustomString& funcString)
@@ -178,11 +181,10 @@ void AddNewLineAfterSentence::transform(CustomString& funcString)
     *(outputText + j) = '\0';
 
     funcString.setData(outputText);
-
-    return outputText;
+    delete[] outputText;
 }
 
-char* AddNewLineAfterEachWord::transform(CustomString& funcString)
+void AddNewLineAfterEachWord::transform(CustomString& funcString)
 {
     int inputLength = funcString.sizeOfArray();
 
@@ -194,7 +196,7 @@ char* AddNewLineAfterEachWord::transform(CustomString& funcString)
         *(outputText + j) = *(funcString.getArray() + i);
         j++;
 
-        if (*(funcString.getArray() + i) == ' ') 
+        if (*(funcString.getArray() + i) == ' ' && *(funcString.getArray() + i + 1) != ' ') 
         {
             *(outputText + j) = '\n';
             j++;
@@ -203,11 +205,11 @@ char* AddNewLineAfterEachWord::transform(CustomString& funcString)
     *(outputText + j) = '\0';
 
     funcString.setData(outputText);
+    delete[] outputText;
 
-    return outputText;
 }
 
-char* AddNewLineEveryKSymbols::transform(CustomString& funcString)
+void AddNewLineEveryKSymbols::transform(CustomString& funcString)
 {
     int inputLength = funcString.sizeOfArray();
 
@@ -219,8 +221,9 @@ char* AddNewLineEveryKSymbols::transform(CustomString& funcString)
         *(outputText + j) = *(funcString.getArray() + i);
         j++;
 
-        if ((i + 1) % k == 0) 
+        if ((i + 1) % k == 0 && *(funcString.getArray() + i + 1) == ' ') 
         {
+            
             *(outputText + j) = '\n';
             j++;
         }
@@ -228,11 +231,10 @@ char* AddNewLineEveryKSymbols::transform(CustomString& funcString)
     *(outputText + j) = '\0';
 
     funcString.setData(outputText);
-
-    return outputText;
+    delete[] outputText;
 }
 
-char* RemoveNewLines::transform(CustomString& funcString)
+void RemoveNewLines::transform(CustomString& funcString)
 {
     int length = funcString.sizeOfArray();
 
@@ -247,88 +249,108 @@ char* RemoveNewLines::transform(CustomString& funcString)
         }
     }
     *(funcString.getArray() + j) = '\0';
+    funcString.setSize(length - (length - j));
 }
 
-char* SortAlphabeticallyAllLines::transform(CustomString& funcString)
+void SortAlphabeticallyAllLines::transform(CustomString& funcString)
 {
     
 }
 
-char* RemoveDuplicateLines::transform(CustomString& funcString)
+void RemoveDuplicateLines::transform(CustomString& funcString)
 {
-    char* inputText = funcString.getArray();
     int inputLength = funcString.sizeOfArray();
-
-    // Подготвяме динамичен масив за съхранение на уникални редове
     char** uniqueLines = new char*[inputLength];
     int uniqueLinesCount = 0;
-
-    // Проходим през оригиналния текст и добавяме всеки уникален ред в новия масив
     int startIndex = 0;
     int endIndex = 0;
+
     while (endIndex <= inputLength) 
     {
-        if (inputText[endIndex] == '\n' || inputText[endIndex] == '\0') 
+        if (*(funcString.getArray() + endIndex) == '\n' || *(funcString.getArray() + endIndex) == '\0') 
         {
-            std::string line(inputText + startIndex, endIndex - startIndex);
+            int lineLength = endIndex - startIndex;
+            char* line = new char[lineLength + 1];
+            strncpy(line, funcString.getArray() + startIndex, lineLength);
+            *(line + lineLength) = '\0';
 
-            // Проверяваме дали редът е уникален
             bool isUnique = true;
-            for (int i = 0; i < uniqueLinesCount; ++i) {
-                if (strcmp(line.c_str(), uniqueLines[i]) == 0) {
+            for (int i = 0; i < uniqueLinesCount; ++i) 
+            {
+                if (strcmp(line, *(uniqueLines + i)) == 0) 
+                {
                     isUnique = false;
                     break;
                 }
             }
-
-            // Ако редът е уникален, го добавяме в новия масив
-            if (isUnique) {
-                uniqueLines[uniqueLinesCount] = new char[line.length() + 1];
-                strcpy(uniqueLines[uniqueLinesCount], line.c_str());
+            if (isUnique) 
+            {
+                *(uniqueLines + uniqueLinesCount) = line;
                 ++uniqueLinesCount;
+            } 
+            else 
+            {
+                delete[] line;
             }
-
             startIndex = endIndex + 1;
         }
         ++endIndex;
     }
 
-    // Създаваме нов символен низ с уникалните редове
-    char* outputText = new char[inputLength + 1];
-    int outputIndex = 0;
+    int totalOutputLength = 0;
     for (int i = 0; i < uniqueLinesCount; ++i) 
     {
-        int lineLength = strlen(uniqueLines[i]);
-        strncpy(outputText + outputIndex, uniqueLines[i], lineLength);
-        outputIndex += lineLength;
-        outputText[outputIndex++] = '\n';
-
-        // Освобождаваме паметта на текущия уникален ред
-        delete[] uniqueLines[i];
+        totalOutputLength += strlen(*(uniqueLines + i)) + 1; // +1 за новия ред
     }
 
-    // Освобождаваме паметта на динамичния масив от уникални редове
+    char* outputText = new char[totalOutputLength];
+    int outputIndex = 0;
+
+    for (int i = 0; i < uniqueLinesCount; ++i) 
+    {
+        int lineLength = strlen(*(uniqueLines + i));
+        strncpy(outputText + outputIndex, *(uniqueLines + i), lineLength);
+        outputIndex += lineLength;
+        *(outputText + outputIndex) = '\n';
+        outputIndex++;
+        delete[] *(uniqueLines + i);
+    }
+
     delete[] uniqueLines;
-
-    // Завършваме новия текст с терминираща нула
-    outputText[outputIndex] = '\0';
-
-    // Освобождаваме паметта на оригиналния текст
-    delete[] inputText;
-
-    // Обновяваме оригиналния текст с новия текст и обновяваме дължината му
+    *(outputText + totalOutputLength - 1) = '\0';
+    delete[] funcString.getArray();
     funcString.setData(outputText);
-
-    return outputText;
+    delete[] outputText;
 }
 
-char* CountLines::transform(CustomString& funcString)
+void CountLines::transform(CustomString& funcString)
 {
-    
+    int count = 0;
+    int index = 0;
+    while (*(funcString.getArray() + index) != '\0') 
+    {
+        if (*(funcString.getArray() + index) == '\n') 
+        {
+            count++;
+        }
+        index++;
+    }
+    int* ptr = &count;
+    const char* data = reinterpret_cast<const char*>(ptr);
+    std::cout << data << std::endl;
+    funcString.setData(data);
 }
 
-char* CountSymbols::transform(CustomString& funcString)
+void CountSymbols::transform(CustomString& funcString)
 {
-    
+    int index = 0;
+    while (*(funcString.getArray() + index) != '\0') 
+    {
+        index++;
+    }
+    int* ptr = &index;
+    const char* data = reinterpret_cast<const char*>(ptr);
+    std::cout << data << std::endl;
+    funcString.setData(data);
 }
 
